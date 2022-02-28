@@ -32,12 +32,12 @@ public class GestorFormularios {
         
         //simula la existencia de N formularios previamente creadas.
         String preFormularios [][] = {
-                            {"0","ACEPTADO", "AE", "9"},
-                            {"1","ACEPTADO", "IC", "3"},
-                            {"2","ACEPTADO", "IC", "1"},
-                            {"3","ACEPTADO", "AE", "0"},
-                            {"4","ACEPTADO", "IC", "3"},
-                            {"5","ACEPTADO", "FI", "8"},
+                            {"0","SOLICITANTE", "AE", "9"},
+                            {"1","SOLICITANTE", "IC", "3"},
+                            {"2","SOLICITANTE", "IC", "1"},
+                            {"3","SOLICITANTE", "AE", "0"},
+                            {"4","SOLICITANTE", "IC", "3"},
+                            {"5","SOLICITANTE", "FI", "8"},
                             {"6","SOLICITANTE", "IE", "2"},
                             {"7","SOLICITANTE", "IM", "5"},
                             };
