@@ -5,8 +5,13 @@
 package view;
 
 import controller.Control;
+import controller.DAO.DAOFormulariosImpl;
+import controller.DTOCarrera;
 import controller.DTOFormulario;
+import java.util.ArrayList;
+import model.Formulario;
 import model.TEstado;
+import static view.PruebaCarreras.elDTO;
 
 
 /**
@@ -16,6 +21,7 @@ import model.TEstado;
 public class PruebaFormularios {
     
     static DTOFormulario elDTO;
+    static DTOCarrera elDTOC;
     
     public static void mostrarFormularios(){
         
@@ -50,6 +56,33 @@ public class PruebaFormularios {
       
       
       System.out.println("Formluarios: \n" + Control.getInstance().getGestorFormulario().getSolicitudEstadoPuntaje("IC", TEstado.ACEPTADO));
+       
+      
+      
+     // ----- Prueba Aplicacion Examen y Actualizacion Estados ----------
+     
+        System.out.println("---------  EXAMEN ------------");
         
+        System.out.println(Control.getInstance().simularAplicacionExamen());
+        
+        System.out.println("........");
+        
+        System.out.println(Control.getInstance().procesarResultados());
+        System.out.println();
+
+        ArrayList<Formulario> todosFormularios;
+        todosFormularios = (ArrayList) DAOFormulariosImpl.getInstance().getAll();
+        
+        
+        elDTOC = Control.getInstance().getDto();
+        
+        Control.getInstance().mostrarCarreras();
+        System.out.println("Todas las carreras\n" + elDTOC.getLasCarreras());
+        
+        for (int i = 0; i < todosFormularios.size(); i++) {
+            
+            System.out.println(todosFormularios.get(i).detallarSolicitud());
+        }
+      
     }
 }

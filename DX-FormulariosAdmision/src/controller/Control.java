@@ -102,4 +102,14 @@ public class Control {
         // el gestor obtiene lo solicitado y lo deja en el dto.
         dtoF.setLosFormularios(gFormularios.getSolicitudes());
     }
+    
+    //funcionalidad: Simula Aplicacion del Examen
+    public boolean simularAplicacionExamen(){
+        return gFormularios.aplicarSimulacion();
+    }
+    
+    //funcionalidad: Cambia los estados del formulario segun las notas obtenidas
+    public boolean procesarResultados(){
+        return gFormularios.actualizarEstados();
+    }
 }

@@ -68,5 +68,10 @@ public class PruebaCarreras {
         Control.getInstance().mostrarCarreras("CA");
         System.out.println("Luego de modificar " + elDTO.getLasCarreras());
        
+        
+        
+        //se muestran las carreras previamente cargadas
+        Control.getInstance().mostrarCarreras();
+        System.out.println("Todas las carreras\n" + elDTO.getLasCarreras());
     }
 }

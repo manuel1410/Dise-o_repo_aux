@@ -14,6 +14,7 @@ import controller.DAO.DAOCarrerasImpl;
 import controller.DTOFormulario;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class GestorFormularios {
@@ -36,7 +37,9 @@ public class GestorFormularios {
                             {"2","ACEPTADO", "IC", "1"},
                             {"3","ACEPTADO", "AE", "0"},
                             {"4","ACEPTADO", "IC", "3"},
-                            {"5","ACEPTADO", "FI", "8"}
+                            {"5","ACEPTADO", "FI", "8"},
+                            {"6","SOLICITANTE", "IE", "2"},
+                            {"7","SOLICITANTE", "IM", "5"},
                             };
         
         for (int i = 0; i < preFormularios.length; i++) {
@@ -45,12 +48,11 @@ public class GestorFormularios {
             Solicitante elSolicitante = (Solicitante) DAOSolicitantesImpl.getInstance().get(preFormularios[i][?]);
             */
             Carrera laCarrera = (Carrera) DAOCarrerasImpl.getInstance().get(preFormularios[i][2]);
-            Solicitante elSolicitante = (Solicitante) DAOSolicitantesImpl.getInstance().get(i);
+            Solicitante elSolicitante = (Solicitante) DAOSolicitantesImpl.getInstance().get(Integer.valueOf(preFormularios[i][3]));
             Formulario unFormulario = new Formulario(Integer.parseInt(preFormularios[i][0]),
                                                      TEstado.valueOf(preFormularios[i][1]),
                                                      laCarrera,
-                                                     elSolicitante,
-                                                     Integer.parseInt(preFormularios[i][3])
+                                                     elSolicitante
             );
             //registra un formulario en la "tabla" de formularios
             DAOFormulariosImpl.getInstance().create(unFormulario);
@@ -79,10 +81,110 @@ public class GestorFormularios {
         return DAOFormulariosImpl.getInstance().create(unFormulario);
     }
     
-    //aplicarSimulacionRegistrar(): boolean
+//aplicarSimulacionRegistrar(): boolean
+    public boolean aplicarSimulacion(){
+        
+        ArrayList<Formulario> todosFormularios;
+        todosFormularios = (ArrayList) DAOFormulariosImpl.getInstance().getAll();
+        //Aqui estan todos los formularios
+        
+        //Para cada formulario, crea una nota aleatoria y la asigna como puntaje
+        //obtenido
+        for (int i = 0; i < todosFormularios.size(); i++) {
+            todosFormularios.get(i).setPuntajeObtenido(notaPseudoaleatoria());
+        }
+        
+        return true;
+    }
+    
+    // Privada: Solo la utiliza la simulacion del Examen, para generar aleatorios
+    // principalmente cercanos a 600
+    private int notaPseudoaleatoria(){
+        
+        double lambda= 600; //Media de poisson
+        double L = Math.exp(lambda*-1);
+        double k= 0, p = 1.0;
+        double randomP = 0;
+        
+        while (p>L){
+            k += 1;
+            p = p * ThreadLocalRandom.current().nextDouble();
+        }
+        
+        randomP = k-1;      //Este seria un resultado de poisson, cercano a 600
+        
+        /*
+        Ajustar agregando o restando al de poisson
+        un aleatorio entre 0 - 100 puntos
+        
+        Asi, la mayoria de las notas se encontraran entre 500-700 puntos
+        */
+        
+        int ajuste = (int) Math.floor(ThreadLocalRandom.current().nextDouble()*100);
+        
+        //50porciento de que lo sume o de que lo reste
+        if (ThreadLocalRandom.current().nextDouble()>0.5){
+            ajuste *= -1;
+        }
+        
+        //Poisson le hace el ajuste
+        return (int) randomP + ajuste;
+    }
     
     //actualizarEstados(): boolean
+    public boolean actualizarEstados(){
+        
+        int cupoDisponible;         //Alamacenara el cupo aun disponible, que es facilitado por otro metodo
+        ArrayList<Formulario> todosFormularios;
+        todosFormularios = (ArrayList) DAOFormulariosImpl.getInstance().getAll();
+        
+        /*
+        Para cada formulario, obtiene la carrera, revisa cuanto cupo le queda, y manda
+        a hacer la evaluacion interna del formulario
+        */
+        for (int i = 0; i < todosFormularios.size(); i++) {
+            cupoDisponible = cupoDisponibleCarrera(todosFormularios.get(i).getCarreraSolicitada()); //Me dice cuanto cupo queda en la carrera
+            todosFormularios.get(i).actualizarEstadoSolicitud(cupoDisponible);
+        }
+        
+        /*
+        for (int i = 0; i < todosFormularios.size(); i++) {     //PARA REVISAR -imprime-
+            System.out.println(todosFormularios.get(i).detallarSolicitud()); 
+        }
+        */
+
+        return true;
+    }
     
+    private int cupoDisponibleCarrera(Carrera pCarrera){
+        ArrayList<Formulario> todosFormularios;
+        todosFormularios = (ArrayList) DAOFormulariosImpl.getInstance().getAll();
+        
+        //Ordena todos los formularios, de mayor a menor por nota
+        //expresion lambda, misma funcion que el metodo estatico de abajo
+        todosFormularios.sort((f1, f2) -> f2.getPuntajeObtenido()-f1.getPuntajeObtenido());
+        int cupoDisponible = pCarrera.getCapacidadMax();
+        
+        
+        for (int i = 0; i < todosFormularios.size(); i++) {
+            if (todosFormularios.get(i).getCarreraSolicitada().equals(pCarrera)&&todosFormularios.get(i).getEstado()==TEstado.ACEPTADO){
+               System.out.println("El Cupo de "+pCarrera.getNombre()+" va por "+cupoDisponible);
+               cupoDisponible--;    //Si este formulario, es de la carrera y esta admitido, entonces resto 1 al contador de cupo
+            
+            }
+        }
+        System.out.println("Y quedo en: "+cupoDisponible);
+        return cupoDisponible;
+    }
+    
+    /*
+    
+    public static Comparator<Formulario> ordenando = new Comparator<Formulario>(){
+        public int compare(Formulario f1, Formulario f2){
+            return f2.getPuntajeObtenido()-f1.getPuntajeObtenido();
+        }
+    };
+    */   
     
     //getSolicitudes(): Collection<Formulario>
     public List getSolicitudes(){

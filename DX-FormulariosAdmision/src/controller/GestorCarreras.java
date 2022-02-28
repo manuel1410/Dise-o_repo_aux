@@ -23,9 +23,11 @@ public class GestorCarreras {
         cargarSedes();
         
         //simula la existencia de N carreras previamente creadas.
-        String carreras [][] = {{"IC","Ing.Computacion","560","140","BACHILLERATO","CA"},
-                            {"AE","Admnistracion Empresas","500","80","LICENCIATURA","SJ"},
-                            {"FI","Ing.Física","750","40","BACHILLERATO","CA"}};
+        String carreras [][] = {{"IC","Ing.Computacion","560","2","BACHILLERATO","CA"},
+                            {"AE","Admnistracion Empresas","500","2","LICENCIATURA","SJ"},
+                            {"FI","Ing.Física","750","2","BACHILLERATO","CA"},
+                            {"IM","Ing. Materiales","670","2","LICENCIATURA","CA"},
+                            {"IE","Ing. Electrónica","540","2","LICENCIATURA","AL"}};
         
         for (int i = 0; i < carreras.length; i++) {
             //localiza en la "tabla" de sedes la sede asociada a la carrera en registro

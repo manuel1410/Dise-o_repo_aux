@@ -70,29 +70,35 @@ public class Formulario {
     public String detallarSolicitud(){
         return "Número formulario: " + num + ", estado: " + estado +
                 ", carreraSolicitada: " + carreraSolicitada.getNombre() + ", puntajeObtenido: " + puntajeObtenido + 
-                ", solicitante: " + solicitante.getNombre() + " " + solicitante.getApellido1() + solicitante.getApellido2() +
+                ", solicitante: " + solicitante.getNombre() + " " + solicitante.getApellido1() + " " + solicitante.getApellido2() +
                 " con identificación: "+solicitante.getNumIdentificacion();
     }
     
-    /**
+        /**
      * calcularEstadoSolicitud
      * Utilizando la informacion de la carrera y nota del estudiante
      * define si esta ADMITIDO; RECHAZADO; EN_ESPERA
      * 
-     * @param pCarrera
-     * @param pNota
+     * Recibe como parametro el cupoDisponible en la carrera en concurso
+     * 
+     * @param pCupoDisponible
      * 
      * @return 
      */
-    public TEstado calcularEstadoSolicitud(Carrera pCarrera, int pNota){
-        int ptsAdm = pCarrera.getPuntajeAdmision(),
-            maxAdm = pCarrera.getCapacidadMax();
+    public TEstado actualizarEstadoSolicitud(int pCupoDisponible){
+        int ptsAdm = this.getCarreraSolicitada().getPuntajeAdmision();
         
-        if (pNota < ptsAdm){
+        if (this.getPuntajeObtenido() < ptsAdm){
+            this.setEstado(TEstado.RECHAZADO);
             return TEstado.RECHAZADO;
         }else{
-            //Falta calcular cupo. Idea: Usando lista de formularios con admitidos y restar
-            return TEstado.ACEPTADO;
+            if (pCupoDisponible<1){
+                this.setEstado(TEstado.EN_ESPERA);
+                return TEstado.EN_ESPERA;
+            }else{
+                this.setEstado(TEstado.ACEPTADO);
+                return TEstado.ACEPTADO;
+            }    
         }
     }
     
