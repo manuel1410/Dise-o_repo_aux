@@ -8,6 +8,7 @@ package controller;
 import controller.DAO.DAOSedesImpl;
 import model.Carrera;
 import model.Sede;
+import model.TEstado;
 import model.TGrado;
 
 /**
@@ -72,6 +73,10 @@ public class Control {
         dto.setLasCarreras(gCarreras.buscarCarreras());
     }
 
+    public int cantSolicitudes(TEstado estado, String carrera, String sede){
+        return this.gFormularios.cantSolicitudesEstadoCarreraSede(estado, carrera, sede);
+    }
+    
     public void mostrarCarreras(String codigoSede){
         dto.setLasCarreras(gCarreras.buscarCarreras(codigoSede));
     }
@@ -111,5 +116,19 @@ public class Control {
     //funcionalidad: Cambia los estados del formulario segun las notas obtenidas
     public boolean procesarResultados(){
         return gFormularios.actualizarEstados();
+    }
+    
+    public void mostrarFormulario (int num){
+        System.out.println(this.gFormularios.getDetalleFormulario(num));
+    }
+    
+    public boolean crearFormulario (int numIdentificacion, String codigoSede, String codigoCarrera) {
+
+        //obtener carrera
+        Carrera c = this.gCarreras.buscarCarrera(codigoSede, codigoCarrera);
+        if (c != null){
+            return this.gFormularios.registrarFormulario(numIdentificacion, c);
+        }
+        return false;
     }
 }

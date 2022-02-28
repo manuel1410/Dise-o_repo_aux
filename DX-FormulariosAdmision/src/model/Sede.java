@@ -38,7 +38,7 @@ public class Sede {
 
     @Override
     public String toString() {
-        return "Sede: Codigo=" + codigo + ", nombre=" + nombre + '\n';
+        return "Sede: Codigo=" + codigo + ", nombre=" + nombre;
     }
 
     @Override

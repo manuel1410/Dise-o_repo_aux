@@ -114,4 +114,29 @@ public class DAOFormulariosImpl implements DAOTrasaccional{
             
         return formulariosCarreraEstado;
     }
+    
+    public List<Formulario> get(TEstado estado, String carrera, String sede) {
+        List<Formulario> result = new ArrayList();
+        for (Formulario form: this.tablaFormularios){
+            if (form.getEstado().equals(estado)){
+                if (form.getCarreraSolicitada() != null 
+                        && form.getCarreraSolicitada().getCodigo().equals(carrera) 
+                        && form.getCarreraSolicitada().getLaSede().getCodigo().equals(sede)){
+                    result.add(form);
+                }
+
+            }
+        }
+        return result;
+    }
+
+    public Formulario get (int num) {
+        for(Formulario f: this.tablaFormularios){
+            if (f.getNum() == num){
+                return f;
+            }
+        }
+        return null;
+    }
+    
 }

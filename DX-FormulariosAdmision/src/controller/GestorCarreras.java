@@ -23,7 +23,7 @@ public class GestorCarreras {
         cargarSedes();
         
         //simula la existencia de N carreras previamente creadas.
-        String carreras [][] = {{"IC","Ing.Computacion","560","1","BACHILLERATO","CA"},
+        String carreras [][] = {{"IC","Ing.Computacion","560","3","BACHILLERATO","CA"},
                             {"AE","Admnistracion Empresas","500","1","LICENCIATURA","SJ"},
                             {"FI","Ing.Física","750","1","BACHILLERATO","CA"},
                             {"IM","Ing. Materiales","670","1","LICENCIATURA","CA"},

@@ -36,10 +36,12 @@ public class GestorFormularios {
                             {"1","SOLICITANTE", "IC", "3"},
                             {"2","SOLICITANTE", "IC", "1"},
                             {"3","SOLICITANTE", "AE", "0"},
-                            {"4","SOLICITANTE", "IC", "3"},
+                            {"4","SOLICITANTE", "IC", "6"},
                             {"5","SOLICITANTE", "FI", "8"},
                             {"6","SOLICITANTE", "IE", "2"},
                             {"7","SOLICITANTE", "IM", "5"},
+                            {"8","SOLICITANTE", "IC", "4"},
+                            {"9","SOLICITANTE", "IC", "7"},
                             };
         
         for (int i = 0; i < preFormularios.length; i++) {
@@ -168,12 +170,10 @@ public class GestorFormularios {
         
         for (int i = 0; i < todosFormularios.size(); i++) {
             if (todosFormularios.get(i).getCarreraSolicitada().equals(pCarrera)&&todosFormularios.get(i).getEstado()==TEstado.ACEPTADO){
-               System.out.println("El Cupo de "+pCarrera.getNombre()+" va por "+cupoDisponible);
                cupoDisponible--;    //Si este formulario, es de la carrera y esta admitido, entonces resto 1 al contador de cupo
             
             }
         }
-        System.out.println("Y quedo en: "+cupoDisponible);
         return cupoDisponible;
     }
     
@@ -287,7 +287,38 @@ public class GestorFormularios {
 
     }
     
+    public int cantSolicitudesEstadoCarreraSede(TEstado estado, String carrera, String sede){
+        return DAOFormulariosImpl.getInstance().get(estado, carrera, sede).size();
+    }
     
+    public String getDetalleFormulario(int numForm) {
+        Formulario form = DAOFormulariosImpl.getInstance().get(numForm);
+        if (form != null){
+            return form.toString();
+        } else {
+            return "Formulario inexistente";
+
+        }
+    }
+    
+    public boolean registrarFormulario(int numIdentificacion, Carrera carrera) {
+        //tomar solicitante
+        Solicitante s = (Solicitante)DAOSolicitantesImpl.getInstance().get(numIdentificacion);
+        if (s != null) {
+            Formulario f = new Formulario();
+            //obtener el ultimo formulario
+            List<Formulario> forms = DAOFormulariosImpl.getInstance().getAll();
+            int newNum = forms.get(forms.size()-1).getNum() + 1 ;
+            Formulario unFormulario = new Formulario(newNum,
+                                                     TEstado.SOLICITANTE,
+                                                     carrera,
+                                                     s
+            );
+            return DAOFormulariosImpl.getInstance().create(unFormulario);
+        }
+        return false;
+    }
+
     //cantSolicitudesEstadoCarreraSede(pEstado:Estado_Solicitud, pCarrera:Carrera, pSede:Sede): int
     
     //getDetalleFormulario(in pNum:int): Formulario
